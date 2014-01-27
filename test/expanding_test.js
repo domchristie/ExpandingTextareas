@@ -60,7 +60,6 @@ test('Copies the textarea CSS on to the clone', function() {
         'wordWrap', 'word-break',
         'borderLeftWidth', 'borderRightWidth',
         'borderTopWidth','borderBottomWidth',
-        'paddingLeft', 'paddingRight',
         'paddingTop','paddingBottom',
         'marginLeft', 'marginRight',
         'marginTop','marginBottom',
@@ -71,6 +70,32 @@ test('Copies the textarea CSS on to the clone', function() {
             'Clone CSS `' + property + '` property equal to that of the textarea');
     });
 });
+
+(function() {
+    var iDevice = 'platform' in window.navigator &&
+                        (/iphone|ipod|ipad/gi).test(window.navigator.platform);
+
+    if(iDevice) {
+        test('Sets `paddingLeft` and `paddingRight` on the clone', function() {
+            var $pre = this.$textarea.siblings('pre');
+
+            equal($pre.css('paddingLeft'), parseInt(this.$textarea.css('paddingLeft'), 10) + 3 + 'px',
+                'Clone CSS `paddingLeft` property 3px greater than that of the textarea');
+            equal($pre.css('paddingRight'), parseInt(this.$textarea.css('paddingRight'), 10) + 3 + 'px',
+                'Clone CSS `paddingRight` property 3px greater than that of the textarea');
+        });
+    }
+    else {
+        test('Sets `paddingLeft` and `paddingRight` on the clone', function() {
+            var $pre = this.$textarea.siblings('pre');
+
+            equal($pre.css('paddingLeft'), parseInt(this.$textarea.css('paddingLeft'), 10) + 'px',
+                'Clone CSS `paddingLeft` property equal to that of the textarea');
+            equal($pre.css('paddingRight'), parseInt(this.$textarea.css('paddingRight'), 10) + 'px',
+                'Clone CSS `paddingRight` property equal to that of the textarea');
+        });
+    }
+})();
 
 test('Ensures the clone is at least as tall as the textarea', 1, function() {
     var $textarea = $('<textarea rows="10" />').appendTo('#qunit-fixture');

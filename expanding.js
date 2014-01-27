@@ -57,6 +57,10 @@
         return v;
     })();
 
+    // Check for iOS device
+    var iDevice = 'platform' in window.navigator &&
+                        (/iphone|ipod|ipad/gi).test(window.navigator.platform);
+
     // Check for oninput support
     // IE9 supports oninput, but not when deleting text, so keyup is used.
     // onpropertychange _is_ supported by IE8/9, but may not be fired unless
@@ -150,6 +154,13 @@
 
             $.each(properties, function(i, property) {
                 var val = _this.$textarea.css(property);
+
+                // iOS textareas (Safari and Chrome) include an additional 6px
+                // horizontal spacing (3px either side), which is
+                // impossible to reset.
+                // See: http://stackoverflow.com/questions/6890149/remove-3-pixels-in-ios-webkit-textarea
+                if(iDevice && /padding(Left|Right)/.test(property) && val)
+                    return _this.$clone.css(property, parseInt(val,10) + 3);
 
                 // Prevent overriding percentage css values.
                 if(_this.$clone.css(property) !== val) {
